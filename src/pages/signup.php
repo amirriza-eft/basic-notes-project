@@ -35,14 +35,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (empty($errors)) {
 
-        $user->create(
-                $fullName,
-                $email,
-                $password
-        );
+        $existingUser = $user->findByEmail($email);
 
-        header('Location: /?page=login&signup=success');
-        exit;
+        if ($existingUser) {
+            $errors[] = 'Email already exists.';
+        } else {
+            $user->create(
+                    $fullName,
+                    $email,
+                    $password
+            );
+
+            header('Location: /?page=login&signup=success');
+            exit;
+        }
     }
 }
 

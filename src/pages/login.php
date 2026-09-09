@@ -25,9 +25,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($loggedUser) {
 
-            $_SESSION['user_id'] = $loggedUser['id'];
-            $_SESSION['user_name'] = $loggedUser['full_name'];
-            $_SESSION['user_email'] = $loggedUser['email'];
+            $rememberMe = isset($_POST['remember_me']);
+
+            if ($rememberMe) {
+                $_SESSION['user_id'] = $loggedUser['id'];
+                $_SESSION['user_name'] = $loggedUser['full_name'];
+                $_SESSION['user_email'] = $loggedUser['email'];
+            }
 
             header('Location: /');
             exit;

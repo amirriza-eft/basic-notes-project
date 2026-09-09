@@ -11,6 +11,7 @@ if($_SERVER["REQUEST_METHOD"] === "POST"){
     if($action === "add"){
 
         $note->create(
+                $_SESSION['user_id'],
                 $_POST['note_title'],
                 $_POST['note']
         );

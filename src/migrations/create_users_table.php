@@ -2,24 +2,8 @@
 
 require __DIR__ . "/../config/database.php";
 
- const HOST = "php81_dev_environment_database";
- const DB = "php81_dev_environment";
- const USER = "root";
- const PASSWORD = "1234";
-
-$pdo = new PDO(
-    "mysql:host=" . HOST .
-    ";dbname=" . DB .
-    ";charset=utf8mb4",
-    USER,
-    PASSWORD
-);
-
-$pdo->setAttribute(
-    PDO::ATTR_ERRMODE,
-    PDO::ERRMODE_EXCEPTION
-);
-
+$db = new DB();
+$pdo = $db->getConnection();
 
 $sql = "
     CREATE TABLE IF NOT EXISTS users (

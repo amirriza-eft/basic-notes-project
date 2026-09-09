@@ -40,7 +40,7 @@ class Auth
         session_unset();
         session_destroy();
 
-        header("Location: /?page=login");
+        header("Location: /?page=/");
         exit;
     }
 

@@ -32,11 +32,11 @@ class User
     public function findByEmail($email)
     {
         $sql = "
-        SELECT *
-        FROM users
-        WHERE email = :email
-        LIMIT 1
-    ";
+            SELECT *
+            FROM users
+            WHERE email = :email
+            LIMIT 1
+        ";
 
         $query = $this->db->prepare($sql);
 

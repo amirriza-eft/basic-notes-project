@@ -9,16 +9,17 @@ class Note
         $this->db = $db;
     }
 
-    public function create($title, $content)
+    public function create($user_id, $title, $content)
     {
         $sql = "
-        INSERT INTO notes(title, content)
-        VALUES(:title, :content)
+        INSERT INTO notes(user_id, title, content)
+        VALUES(:user_id, :title, :content)
         ";
 
         $query = $this->db->prepare($sql);
 
         $query->execute([
+            "user_id" => $user_id,
             "title" => $title,
             "content" => $content
         ]);
