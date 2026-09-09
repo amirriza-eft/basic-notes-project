@@ -9,7 +9,7 @@ class Note
         $this->db = $db;
     }
 
-    public function addNote($title, $content)
+    public function create($title, $content)
     {
         $sql = "
         INSERT INTO notes(title, content)
@@ -23,6 +23,10 @@ class Note
             "content" => $content
         ]);
 
-        return (int) $this->db->lastInsertId();
+        $this->id = (int) $this->db->lastInsertId();
+        $this->title = $title;
+        $this->content = $content;
+
+        return $this;
     }
 }

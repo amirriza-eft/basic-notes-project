@@ -6,10 +6,7 @@ require __DIR__ . "/../models/Note.php";
 
 $db = new DB();
 
-$noteModel = new Note(
-        $db->getConnection()
-);
-
+$note = new Note($db->getConnection());
 
 if($_SERVER["REQUEST_METHOD"] === "POST"){
 
@@ -17,11 +14,14 @@ if($_SERVER["REQUEST_METHOD"] === "POST"){
 
     if($action === "add"){
 
-        $noteModel->addNote(
+        $note->create(
                 $_POST['note_title'],
                 $_POST['note']
         );
 
+//        echo $note->id;
+//        echo $note->title;
+//        echo $note->content;
     }
 
     header("Location:/");
