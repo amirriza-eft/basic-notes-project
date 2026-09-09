@@ -1,5 +1,54 @@
 <?php
 
+require __DIR__ . "/../config/database.php";
+require __DIR__ . "/../models/User.php";
+
+$db = new DB();
+
+$user = new User($db->getConnection());
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    $fullName = trim($_POST['full_name'] ?? '');
+    $email = trim($_POST['email'] ?? '');
+    $password = $_POST['password'] ?? '';
+    $confirmPassword = $_POST['confirm_password'] ?? '';
+
+    $errors = [];
+
+    if ($fullName === '') {
+        $errors[] = 'Full name is required.';
+    }
+
+    if ($email === '') {
+        $errors[] = 'Email is required.';
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $errors[] = 'Please enter a valid email address.';
+    }
+
+    if ($password === '') {
+        $errors[] = 'Password is required.';
+    } elseif (strlen($password) < 8) {
+        $errors[] = 'Password must be at least 8 characters.';
+    }
+
+    if ($password !== $confirmPassword) {
+        $errors[] = 'Passwords do not match.';
+    }
+
+    if (empty($errors)) {
+
+        $user->create(
+                $fullName,
+                $email,
+                $password
+        );
+
+        header('Location: /?page=login&signup=success');
+        exit;
+    }
+}
+
 ?>
 
 <!DOCTYPE html>

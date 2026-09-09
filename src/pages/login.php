@@ -1,8 +1,49 @@
 <?php
 
+require __DIR__ . "/../config/database.php";
+require __DIR__ . "/../models/User.php";
+
+$db = new DB();
+
+$user = new User($db->getConnection());
+
 $errors = array();
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    $email = trim($_POST['email'] ?? '');
+    $password = $_POST['password'] ?? '';
+
+    if ($email === '') {
+        $errors[] = 'Email is required.';
+    }
+
+    if ($password === '') {
+        $errors[] = 'Password is required.';
+    }
+
+    if (empty($errors)) {
+
+        $loggedUser = $user->login($email, $password);
+
+        if ($loggedUser) {
+
+            $_SESSION['user_id'] = $loggedUser['id'];
+            $_SESSION['user_name'] = $loggedUser['full_name'];
+            $_SESSION['user_email'] = $loggedUser['email'];
+
+            header('Location: /');
+            exit;
+
+        } else {
+
+            $errors[] = 'Invalid email or password.';
+        }
+    }
+}
+
 ?>
+
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
