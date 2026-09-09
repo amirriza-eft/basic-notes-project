@@ -1,9 +1,5 @@
 <?php
 
-require __DIR__ . "/../config/database.php";
-require __DIR__ . "/../models/Note.php";
-
-
 $db = new DB();
 
 $note = new Note($db->getConnection());

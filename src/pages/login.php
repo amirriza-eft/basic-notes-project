@@ -1,8 +1,5 @@
 <?php
 
-require __DIR__ . "/../config/database.php";
-require __DIR__ . "/../models/User.php";
-
 $db = new DB();
 
 $user = new User($db->getConnection());
@@ -61,6 +58,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="container py-5">
         <div class="auth-card p-4 p-md-5">
             <h1 class="text-center auth-title mb-4">Login</h1>
+
+            <?php if (!empty($errors)): ?>
+                <div class="alert alert-danger">
+                    <?php foreach ($errors as $error): ?>
+                        <div><?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?></div>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
 
             <form method="POST" action="/?page=login">
                 <div class="mb-3">
