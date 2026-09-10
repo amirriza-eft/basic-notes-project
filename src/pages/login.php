@@ -1,6 +1,10 @@
 <?php
 
+require_once __DIR__ . '/../helpers/remember_token.php';
+
 $db = new DB();
+
+$pdo = $db->getConnection();
 
 $user = new User($db->getConnection());
 
@@ -25,19 +29,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($loggedUser) {
 
-            $rememberMe = isset($_POST['remember_me']);
+            $_SESSION['user_id'] = $loggedUser['id'];
+            $_SESSION['user_name'] = $loggedUser['full_name'];
+            $_SESSION['user_email'] = $loggedUser['email'];
 
-            if ($rememberMe) {
-                $_SESSION['user_id'] = $loggedUser['id'];
-                $_SESSION['user_name'] = $loggedUser['full_name'];
-                $_SESSION['user_email'] = $loggedUser['email'];
+            if(isset($_POST['remember_me']))
+            {
+                createRememberToken(
+                        $pdo,
+                        $loggedUser['id']
+                );
             }
 
             header('Location: /');
             exit;
 
         } else {
-
             $errors[] = 'Invalid email or password.';
         }
     }
