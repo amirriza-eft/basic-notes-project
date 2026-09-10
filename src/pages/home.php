@@ -21,13 +21,18 @@ if($_SERVER["REQUEST_METHOD"] === "POST"){
 
     if($action === "add"){
 
-        $note->create(
-                $auth->id(),
-                $_POST['note_title'],
-                $_POST['note']
-        );
+        if(NotePolicy::create($auth->id())){
 
-        $_SESSION['message'] = "Note created successfully.";
+            $note->create(
+                    $auth->id(),
+                    $_POST['note_title'],
+                    $_POST['note']
+            );
+
+            $_SESSION['message'] = "Note created successfully.";
+        } else {
+            $_SESSION['message'] = "You don't have permission to create note.";
+        }
     }
 
     if($action === "delete"){
@@ -42,6 +47,8 @@ if($_SERVER["REQUEST_METHOD"] === "POST"){
             );
 
             $_SESSION['message'] = "Note deleted successfully.";
+        } else {
+            $_SESSION['message'] = "You don't have permission to delete notes.";
         }
     }
 
@@ -59,6 +66,8 @@ if($_SERVER["REQUEST_METHOD"] === "POST"){
             );
 
             $_SESSION['message'] = "Note updated successfully.";
+        } else {
+            $_SESSION['message'] = "You don't have permission to update notes.";
         }
     }
 

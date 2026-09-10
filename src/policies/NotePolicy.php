@@ -2,6 +2,7 @@
 
 class NotePolicy
 {
+
     public static function update($note, $userId)
     {
         return $note['user_id'] == $userId;
@@ -11,4 +12,10 @@ class NotePolicy
     {
         return $note['user_id'] == $userId;
     }
+
+    public static function create($userId)
+    {
+        return $userId !== null;
+    }
+
 }
