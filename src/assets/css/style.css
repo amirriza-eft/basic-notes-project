@@ -1,23 +1,119 @@
-body{
+html,
+body {
+  min-height:100%;
+}
+
+body {
   min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  margin:0;
   background:linear-gradient(135deg,#020617,#0f172a,#172554);
   font-family:Arial,sans-serif;
   color:white;
 }
 
-.main-card{
+.page-content {
+  flex:1 0 auto;
+  width:100%;
+}
+
+.site-header {
+  flex:0 0 auto;
+  background:rgba(11,27,54,.8);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid rgba(255,255,255,.08);
+  padding:10px 0;
+}
+
+.navbar-brand {
+  letter-spacing:1px;
+}
+
+.login-btn {
+  background:#2563eb;
+  border:none;
+  border-radius:12px;
+  padding:10px 25px;
+}
+
+.login-btn:hover {
+  background:#1d4ed8;
+}
+
+.signup-btn {
+  border-radius:12px;
+  padding:10px 25px;
+  border-color:rgba(255,255,255,.35);
+}
+
+.signup-btn:hover {
+  background:rgba(255,255,255,.08);
+  border-color:rgba(255,255,255,.55);
+}
+
+.user-name {
+  color:#e2e8f0;
+  font-weight:600;
+}
+
+.logout-btn {
+  background:rgba(220,38,38,.15);
+  border:1px solid rgba(248,113,113,.45);
+  color:#fca5a5;
+  border-radius:12px;
+  padding:8px18px;
+  font-size:14px;
+  font-weight:600;
+}
+
+.logout-btn:hover {
+  background:#dc2626;
+  border-color:#dc2626;
+  color:white;
+}
+
+.site-footer {
+  flex:0 0 auto;
+  margin-top:auto;
+  background:#071426;
+  border-top:1px solid rgba(255,255,255,.08);
+  padding:25px 0;
+}
+
+.github-link {
+  color:#60a5fa;
+  text-decoration:none;
+}
+
+.github-link:hover {
+  color:#93c5fd;
+}
+
+.main-card,
+.auth-card {
   background:#0b1b36;
   border-radius:20px;
   box-shadow:0 20px 50px rgba(0,0,0,.4);
   border:1px solid rgba(255,255,255,.08);
 }
 
-.title{
+.auth-card {
+  max-width:480px;
+  margin:auto;
+}
+
+.title {
   font-size:42px;
   font-weight:700;
 }
 
-.note-input{
+.auth-title {
+  font-size:36px;
+  font-weight:700;
+}
+
+.note-input {
   background:#071426;
   border:1px solid #1e3a8a;
   color:white;
@@ -25,18 +121,50 @@ body{
   resize:none;
 }
 
-.note-input:focus{
+.note-input:focus,
+.edit-input:focus {
   background:#071426;
   color:white;
   border-color:#3b82f6;
   box-shadow:0 0 15px rgba(59,130,246,.3);
 }
 
-.note-input::placeholder{
+.note-input::placeholder {
   color:#94a3b8;
 }
 
-.note-card{
+.edit-input {
+  background:#071426;
+  border:1px solid #1e3a8a;
+  color:white;
+  border-radius:10px;
+}
+
+.btn-add {
+  background:#2563eb;
+  border:none;
+  border-radius:12px;
+}
+
+.btn-add:hover {
+  background:#1d4ed8;
+}
+
+.auth-link {
+  color:#60a5fa;
+  text-decoration:none;
+}
+
+.auth-link:hover {
+  color:#93c5fd;
+}
+
+.form-check-input:checked {
+  background-color:#2563eb;
+  border-color:#2563eb;
+}
+
+.note-card {
   background:#10254a;
   border-radius:18px;
   padding:20px;
@@ -44,30 +172,87 @@ body{
   border:1px solid rgba(255,255,255,.08);
 }
 
-.note-card:hover{
+.note-card:hover {
   transform:translateY(-5px);
   box-shadow:0 15px 35px rgba(0,0,0,.35);
 }
 
-.note-text{
+.note-title {
+  color:#f8fafc;
+  font-size:22px;
+  font-weight:700;
+  margin-bottom:12px;
+}
+
+.note-text {
   color:#e2e8f0;
   font-size:17px;
   line-height:1.8;
   white-space:pre-wrap;
 }
 
-.btn-add{
-  background:#2563eb;
-  border:none;
-  border-radius:12px;
+.note-meta {
+  color:#94a3b8;
+  font-size:14px;
 }
 
-.btn-add:hover{
-  background:#1d4ed8;
-}
-
-.empty{
+.empty {
   color:#94a3b8;
   text-align:center;
   padding:40px;
+}
+
+.btn-note-edit {
+  background:#2563eb;
+  border:none;
+  color:white;
+  border-radius:8px;
+  padding:6px 12px;
+  font-size:13px;
+}
+
+.btn-note-edit:hover {
+  background:#1d4ed8;
+  color:white;
+}
+
+.btn-note-delete {
+  background:#dc2626;
+  border:none;
+  color:white;
+  border-radius:8px;
+  padding:6px 12px;
+  font-size:13px;
+}
+
+.btn-note-delete:hover {
+  background:#b91c1c;
+  color:white;
+}
+
+.btn-note-save {
+  background:#2563eb;
+  border:none;
+  color:white;
+  border-radius:8px;
+  padding:6px 12px;
+}
+
+.btn-note-save:hover {
+  background:#1d4ed8;
+  color:white;
+}
+
+.btn-note-cancel {
+  border-radius:8px;
+  padding:6px 12px;
+  font-size:13px;
+  border-color:rgba(255,255,255,.35);
+  color:#e2e8f0;
+  text-decoration:none;
+}
+
+.btn-note-cancel:hover {
+  background:rgba(255,255,255,.08);
+  color:white;
 }

@@ -7,7 +7,7 @@ $routes = array(
     'logout' => 'logout.php',
 );
 
-function route($uri)
+function route($uri, $pdo, $auth)
 {
     global $routes;
 
