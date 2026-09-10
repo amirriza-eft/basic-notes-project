@@ -82,4 +82,21 @@ class Note
             'content' => $content
         ));
     }
+
+    public function find($id)
+    {
+        $sql = "
+            SELECT *
+            FROM notes
+            WHERE id = :id
+        ";
+
+        $query = $this->db->prepare($sql);
+
+        $query->execute([
+            "id" => $id
+        ]);
+
+        return $query->fetch(PDO::FETCH_ASSOC);
+    }
 }

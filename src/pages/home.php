@@ -32,24 +32,34 @@ if($_SERVER["REQUEST_METHOD"] === "POST"){
 
     if($action === "delete"){
 
-        $note->delete(
-                $_POST['id'],
-                $auth->id()
-        );
+        $noteData = $note->find($_POST['id']);
 
-        $_SESSION['message'] = "Note deleted successfully.";
+        if(NotePolicy::delete($noteData, $auth->id())){
+
+            $note->delete(
+                    $_POST['id'],
+                    $auth->id()
+            );
+
+            $_SESSION['message'] = "Note deleted successfully.";
+        }
     }
 
     if($action === "edit"){
 
-        $note->update(
-                $_POST['id'],
-                $auth->id(),
-                $_POST['updated_title'],
-                $_POST['updated_note']
-        );
+        $noteData = $note->find($_POST['id']);
 
-        $_SESSION['message'] = "Note updated successfully.";
+        if(NotePolicy::update($noteData, $auth->id())){
+
+            $note->update(
+                    $_POST['id'],
+                    $auth->id(),
+                    $_POST['updated_title'],
+                    $_POST['updated_note']
+            );
+
+            $_SESSION['message'] = "Note updated successfully.";
+        }
     }
 
     header("Location:/");
