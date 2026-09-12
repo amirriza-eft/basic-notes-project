@@ -23,6 +23,13 @@ function route($uri, $pdo, $auth)
 $method = $_SERVER['REQUEST_METHOD'];
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
+if ($method === 'POST' && $uri === '/login') {
+    $controller = new AuthController($auth, $user, $pdo);
+    $controller->login();
+}
+
+
+
 if ($method === 'POST' && $uri === '/notes/create') {
     $controller = new NoteController($auth, $note);
     $controller->store();

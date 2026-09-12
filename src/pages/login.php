@@ -10,46 +10,6 @@ $user = new User($db->getConnection());
 
 $errors = array();
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-    $email = trim($_POST['email'] ?? '');
-    $password = $_POST['password'] ?? '';
-
-    if ($email === '') {
-        $errors[] = 'Email is required.';
-    }
-
-    if ($password === '') {
-        $errors[] = 'Password is required.';
-    }
-
-    if (empty($errors)) {
-
-        $loggedUser = $user->login($email, $password);
-
-        if ($loggedUser) {
-
-            $_SESSION['user_id'] = $loggedUser['id'];
-            $_SESSION['user_name'] = $loggedUser['full_name'];
-            $_SESSION['user_email'] = $loggedUser['email'];
-
-            if(isset($_POST['remember_me']))
-            {
-                createRememberToken(
-                        $pdo,
-                        $loggedUser['id']
-                );
-            }
-
-            header('Location: /');
-            exit;
-
-        } else {
-            $errors[] = 'Invalid email or password.';
-        }
-    }
-}
-
 ?>
 
 <!DOCTYPE html>
@@ -78,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
             <?php endif; ?>
 
-            <form method="POST" action="/?page=login">
+            <form method="POST" action="/login">
                 <div class="mb-3">
                     <label class="form-label" for="email">Email</label>
                     <input
