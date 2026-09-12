@@ -37,6 +37,12 @@ class NoteController
             exit;
         }
 
+        if (strlen($content) > 300) {
+            $_SESSION['message'] = "Note content has to be less than 300 characters.";
+            header('Location: /');
+            exit;
+        }
+
         $this->note->create(
             $userId,
             $title,
@@ -84,6 +90,12 @@ class NoteController
 
         if (strlen($title) > 30) {
             $_SESSION['message'] = "Note title is too long.";
+            header('Location: /');
+            exit;
+        }
+
+        if (strlen($content) > 300) {
+            $_SESSION['message'] = "Note content has to be less than 300 characters.";
             header('Location: /');
             exit;
         }
