@@ -115,6 +115,10 @@ unset($_SESSION['message']);
                                         <?= htmlspecialchars($note['content']); ?>
                                     </div>
 
+                                    <small class="text-secondary d-block mb-3">
+                                        Created:
+                                        <?= date('M j, Y \a\t H:i', strtotime($note['created_at'])); ?>
+                                    </small>
 
                                     <div
                                             class="d-flex gap-2"

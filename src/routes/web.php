@@ -4,7 +4,6 @@ $routes = array(
     '/' => 'home.php',
     'login' => 'login.php',
     'signup' => 'signup.php',
-    'logout' => 'logout.php',
 );
 
 function route($uri, $pdo, $auth)
