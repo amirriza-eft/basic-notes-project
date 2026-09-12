@@ -19,3 +19,21 @@ function route($uri, $pdo, $auth)
     http_response_code(404);
     echo '404 Page Not Found';
 }
+
+$method = $_SERVER['REQUEST_METHOD'];
+$uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+
+if ($method === 'POST' && $uri === '/notes/create') {
+    $controller = new NoteController($auth, $note);
+    $controller->store();
+}
+
+if ($method === 'POST' && $uri === '/notes/update') {
+    $controller = new NoteController($auth, $note);
+    $controller->update();
+}
+
+if ($method === 'POST' && $uri === '/notes/delete') {
+    $controller = new NoteController($auth, $note);
+    $controller->delete();
+}

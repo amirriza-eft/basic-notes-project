@@ -11,69 +11,9 @@ $notes = $note->getUserNotes(
 
 $isLoggedIn = $auth->check();
 
+
 $message = $_SESSION['message'] ?? null;
 unset($_SESSION['message']);
-
-
-if($_SERVER["REQUEST_METHOD"] === "POST"){
-
-    $action = $_POST['action'] ?? "";
-
-    if($action === "add"){
-
-        if(NotePolicy::create($auth->id())){
-
-            $note->create(
-                    $auth->id(),
-                    $_POST['note_title'],
-                    $_POST['note']
-            );
-
-            $_SESSION['message'] = "Note created successfully.";
-        } else {
-            $_SESSION['message'] = "You don't have permission to create note.";
-        }
-    }
-
-    if($action === "delete"){
-
-        $noteData = $note->find($_POST['id']);
-
-        if(NotePolicy::delete($noteData, $auth->id())){
-
-            $note->delete(
-                    $_POST['id'],
-                    $auth->id()
-            );
-
-            $_SESSION['message'] = "Note deleted successfully.";
-        } else {
-            $_SESSION['message'] = "You don't have permission to delete notes.";
-        }
-    }
-
-    if($action === "edit"){
-
-        $noteData = $note->find($_POST['id']);
-
-        if(NotePolicy::update($noteData, $auth->id())){
-
-            $note->update(
-                    $_POST['id'],
-                    $auth->id(),
-                    $_POST['updated_title'],
-                    $_POST['updated_note']
-            );
-
-            $_SESSION['message'] = "Note updated successfully.";
-        } else {
-            $_SESSION['message'] = "You don't have permission to update notes.";
-        }
-    }
-
-    header("Location:/");
-    exit;
-}
 
 ?>
 
@@ -126,12 +66,7 @@ if($_SERVER["REQUEST_METHOD"] === "POST"){
                 </div>
             <?php else: ?>
 
-                <form method="POST">
-                    <input
-                            type="hidden"
-                            name="action"
-                            value="add"
-                    >
+                <form method="POST" action="/notes/create">
                     <input
                             type="text"
                             name="note_title"
@@ -195,13 +130,7 @@ if($_SERVER["REQUEST_METHOD"] === "POST"){
                                         </button>
 
 
-                                        <form method="POST">
-
-                                            <input
-                                                    type="hidden"
-                                                    name="action"
-                                                    value="delete"
-                                            >
+                                        <form method="POST" action="/notes/delete">
 
                                             <input
                                                     type="hidden"
@@ -223,13 +152,8 @@ if($_SERVER["REQUEST_METHOD"] === "POST"){
                                             id="edit-<?= $note['id']; ?>"
                                             style="display:none;"
                                             class="mt-3"
+                                            action="/notes/update"
                                     >
-
-                                        <input
-                                                type="hidden"
-                                                name="action"
-                                                value="edit"
-                                        >
 
                                         <input
                                                 type="hidden"
@@ -237,14 +161,12 @@ if($_SERVER["REQUEST_METHOD"] === "POST"){
                                                 value="<?= $note['id']; ?>"
                                         >
 
-
                                         <input
                                                 class="form-control edit-input mb-2"
                                                 name="updated_title"
                                                 value="<?= htmlspecialchars($note['title']); ?>"
                                                 required
                                         >
-
 
                                         <textarea
                                                 class="form-control edit-input mb-2"

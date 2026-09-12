@@ -1,30 +1,33 @@
 FROM php:8.1-apache-bookworm
 
-RUN apt-get update -y && apt-get install -y
-RUN docker-php-ext-install pdo pdo_mysql \
-	&& docker-php-ext-enable pdo_mysql
+RUN apt-get update -y && apt-get install -y \
+    unzip \
+    libfreetype-dev \
+    libjpeg62-turbo-dev \
+    libpng-dev \
+    libzip-dev
 
-RUN docker-php-ext-install mysqli \
-	&& docker-php-ext-enable mysqli
+RUN docker-php-ext-install pdo pdo_mysql mysqli
 
-RUN apt-get update && apt-get install -y \
-		libfreetype-dev \
-		libjpeg62-turbo-dev \
-		libpng-dev \
-	&& docker-php-ext-configure gd --with-freetype --with-jpeg \
-	&& docker-php-ext-install -j$(nproc) gd
-	
-RUN apt-get install unzip -y
+RUN docker-php-ext-configure gd \
+    --with-freetype \
+    --with-jpeg
 
-RUN apt-get install -y libzip-dev && docker-php-ext-install zip
-
-RUN chown -R www-data:www-data /var/www/html
+RUN docker-php-ext-install -j$(nproc) gd zip
 
 RUN a2enmod rewrite
 
-RUN apachectl restart
+RUN sed -i 's#DocumentRoot /var/www/html#DocumentRoot /var/www/html/src#' \
+    /etc/apache2/sites-available/000-default.conf
 
-# php.ini
+RUN sed -i 's#<Directory /var/www/>#<Directory /var/www/html/src/>#' \
+    /etc/apache2/apache2.conf
+
+RUN sed -i 's/AllowOverride None/AllowOverride All/g' \
+    /etc/apache2/apache2.conf
+
 COPY php.ini /usr/local/etc/php/
+
+RUN chown -R www-data:www-data /var/www/html
 
 EXPOSE 80

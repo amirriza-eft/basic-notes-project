@@ -13,11 +13,15 @@ require_once __DIR__ . '/models/Note.php';
 
 $db = new DB();
 $pdo = $db->getConnection();
+
 $auth = new Auth($pdo);
+$note = new Note($pdo);
 
 checkRememberToken($pdo);
 
+require_once __DIR__ . '/controllers/NoteController.php';
 require_once __DIR__ . "/routes/web.php";
+
 route(
     $_GET['page'] ?? "/",
     $pdo,
