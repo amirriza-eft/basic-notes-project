@@ -56,4 +56,60 @@ class AuthController
         header('Location: /?page=login');
         exit;
     }
+
+
+    public function signup()
+    {
+        $fullName = trim($_POST['full_name'] ?? '');
+        $email = trim($_POST['email'] ?? '');
+        $password = trim($_POST['password'] ?? '');
+        $confirmPassword = trim($_POST['confirm_password'] ?? '');
+
+        $errors = [];
+
+        if ($fullName === '') {
+            $errors['full_name'] = "Full name is required.";
+        }
+
+        if ($email === '') {
+            $errors['email'] = "Email is required.";
+        } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $errors['email'] = "Invalid email address.";
+        }
+
+        if ($password === '') {
+            $errors['password'] = "Password is required.";
+        }elseif ($password !== $confirmPassword) {
+            $errors['confirmPassword'] = "Password does not match.";
+        }
+
+        if (empty($errors)) {
+            $existingUser = $this->user->findByEmail($email);
+
+            if ($existingUser) {
+                $errors['email'] = "Email already exists.";
+            } else {
+
+                $this->user->create($fullName, $email, $password);
+
+                $_SESSION['message'] = 'Account created successfully. Please log in.';
+
+                header('Location: /?page=login');
+                exit;
+            }
+        }
+
+        $_SESSION['errors'] = $errors;
+
+        header('Location: /?page=signup');
+        exit;
+    }
+
+    public function logout()
+    {
+        $this->auth->logout();
+
+        header('Location: /?page=login');
+        exit;
+    }
 }

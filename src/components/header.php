@@ -20,9 +20,12 @@ $userFullName = $auth->fullName();
                     <span class="text-white">
                         <?= htmlspecialchars($userFullName) ?>
                     </span>
-                    <a href="/?page=logout" class="btn btn-danger">
-                        Logout
-                    </a>
+
+                    <form method="POST" action="/logout" class="m-0">
+                        <button type="submit" class="btn btn-danger">
+                            Logout
+                        </button>
+                    </form>
 
                 <?php else: ?>
 

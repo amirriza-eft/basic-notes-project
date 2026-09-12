@@ -28,6 +28,15 @@ if ($method === 'POST' && $uri === '/login') {
     $controller->login();
 }
 
+if ($method === 'POST' && $uri === '/signup') {
+    $controller = new AuthController($auth, $user, $pdo);
+    $controller->signup();
+}
+
+if ($method === 'POST' && $uri === '/logout') {
+    $controller = new AuthController($auth, $user, $pdo);
+    $controller->logout();
+}
 
 
 if ($method === 'POST' && $uri === '/notes/create') {
