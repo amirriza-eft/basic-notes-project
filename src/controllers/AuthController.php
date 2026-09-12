@@ -69,6 +69,10 @@ class AuthController
 
         if ($fullName === '') {
             $errors['full_name'] = "Full name is required.";
+        } elseif (strlen($fullName) < 3) {
+            $errors['full_name'] = "Full name must be at least 3 characters.";
+        } elseif (strlen($fullName) > 100) {
+            $errors['full_name'] = "Full name must be less than 30 characters.";
         }
 
         if ($email === '') {
@@ -80,7 +84,9 @@ class AuthController
         if ($password === '') {
             $errors['password'] = "Password is required.";
         }elseif ($password !== $confirmPassword) {
-            $errors['confirmPassword'] = "Password does not match.";
+            $errors['confirm_password'] = "Password does not match.";
+        }elseif (strlen($password) < 6) {
+            $errors['password'] = "Password must be at least 6 characters.";
         }
 
         if (empty($errors)) {
