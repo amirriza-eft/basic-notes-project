@@ -29,7 +29,7 @@ $userFullName = $auth->fullName();
 
                 <?php else: ?>
 
-                    <a href="/?page=login" class="btn btn-primary login-btn">
+                    <a href="/login" class="btn btn-primary login-btn">
                         Login / Signup
                     </a>
 

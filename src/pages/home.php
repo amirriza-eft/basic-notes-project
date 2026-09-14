@@ -5,46 +5,6 @@ $isLoggedIn = $auth->check();
 $message = $_SESSION['message'] ?? null;
 unset($_SESSION['message']);
 
-$search = trim($_GET['notes_search'] ?? '');
-$from = $_GET['from'] ?? '';
-$to = $_GET['to'] ?? '';
-$sort = $_GET['notes_sort'] ?? 'newest';
-
-$perPage = 6;
-
-$page = max(
-        1,
-        (int) ($_GET['notes_page'] ?? 1)
-);
-
-$offset = ($page - 1) * $perPage;
-
-$notes = [];
-$totalNotes = 0;
-
-if ($isLoggedIn) {
-    $userId = $auth->id();
-
-    $notes = $note->getUserNotes(
-            $userId,
-            $search,
-            $from,
-            $to,
-            $sort,
-            $perPage,
-            $offset
-    );
-
-    $totalNotes = $note->countUserNotes(
-            $userId,
-            $search,
-            $from,
-            $to
-    );
-}
-
-$totalPages = (int) ceil($totalNotes / $perPage);
-
 ?>
 
 <!DOCTYPE html>
@@ -92,7 +52,7 @@ $totalPages = (int) ceil($totalNotes / $perPage);
 
             <?php if (!$isLoggedIn): ?>
                 <div class="empty guest-box">
-                    Please <a href="/?page=login">login</a> or <a href="/?page=signup">signup</a> to create and manage your notes.
+                    Please <a href="/login">login</a> or <a href="/signup">signup</a> to create and manage your notes.
                 </div>
             <?php else: ?>
 
@@ -124,7 +84,7 @@ $totalPages = (int) ceil($totalNotes / $perPage);
                     Your Notes
                 </h3>
 
-                <form method="GET" action="/" class="note-filter mb-5">
+                <form method="GET" action="/notes/search" class="note-filter mb-5">
                     <div class="input-group mb-3">
                         <input
                                 type="text"
@@ -183,7 +143,7 @@ $totalPages = (int) ceil($totalNotes / $perPage);
                     </div>
                 </form>
 
-                <form method="GET" action="/" class="mb-4">
+                <form method="GET" action="/notes/search" class="mb-4">
                     <input
                             type="hidden"
                             name="notes_search"
@@ -345,11 +305,12 @@ $totalPages = (int) ceil($totalNotes / $perPage);
                     <?php if ($totalPages > 1): ?>
                         <nav class="mt-5" aria-label="Notes pagination">
                             <ul class="pagination justify-content-center">
+
                                 <?php if ($page > 1): ?>
                                     <li class="page-item">
                                         <a
                                                 class="page-link pagination-link"
-                                                href="?notes_search=<?= urlencode($search); ?>&from=<?= urlencode($from); ?>&to=<?= urlencode($to); ?>&notes_sort=<?= urlencode($sort); ?>&notes_page=<?= $page - 1; ?>"
+                                                href="/notes/search?notes_search=<?= urlencode($search); ?>&from=<?= urlencode($from); ?>&to=<?= urlencode($to); ?>&notes_sort=<?= urlencode($sort); ?>&notes_page=<?= $page - 1; ?>"
                                         >
                                             ← Previous
                                         </a>
@@ -362,7 +323,7 @@ $totalPages = (int) ceil($totalNotes / $perPage);
                                     >
                                         <a
                                                 class="page-link pagination-link"
-                                                href="?notes_search=<?= urlencode($search); ?>&from=<?= urlencode($from); ?>&to=<?= urlencode($to); ?>&notes_sort=<?= urlencode($sort); ?>&notes_page=<?= $i; ?>"
+                                                href="/notes/search?notes_search=<?= urlencode($search); ?>&from=<?= urlencode($from); ?>&to=<?= urlencode($to); ?>&notes_sort=<?= urlencode($sort); ?>&notes_page=<?= $i; ?>"
                                         >
                                             <?= $i; ?>
                                         </a>
@@ -373,7 +334,7 @@ $totalPages = (int) ceil($totalNotes / $perPage);
                                     <li class="page-item">
                                         <a
                                                 class="page-link pagination-link"
-                                                href="?notes_search=<?= urlencode($search); ?>&from=<?= urlencode($from); ?>&to=<?= urlencode($to); ?>&notes_sort=<?= urlencode($sort); ?>&notes_page=<?= $page + 1; ?>"
+                                                href="/notes/search?notes_search=<?= urlencode($search); ?>&from=<?= urlencode($from); ?>&to=<?= urlencode($to); ?>&notes_sort=<?= urlencode($sort); ?>&notes_page=<?= $page + 1; ?>"
                                         >
                                             Next →
                                         </a>

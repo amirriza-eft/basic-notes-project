@@ -123,9 +123,9 @@ class NoteController
             exit;
         }
 
-        $noteData = $note = $this->note->find($noteId);
+        $noteData = $this->note->find($noteId);
 
-        if (!$note) {
+        if (!$noteData) {
             $_SESSION['message'] = "Note not found.";
             header('Location: /');
             exit;
@@ -145,4 +145,92 @@ class NoteController
         exit;
     }
 
+    public function search()
+    {
+        $userId = $this->auth->id();
+
+        $search = trim($_GET['notes_search'] ?? '');
+        $from = $_GET['from'] ?? '';
+        $to = $_GET['to'] ?? '';
+        $sort = $_GET['notes_sort'] ?? 'newest';
+
+        $perPage = 6;
+
+        $page = max(
+            1,
+            (int) ($_GET['notes_page'] ?? 1)
+        );
+
+        $totalNotes = $this->note->countUserNotes(
+            $userId,
+            $search,
+            $from,
+            $to
+        );
+
+        $totalPages = (int) ceil($totalNotes / $perPage);
+
+        if ($totalPages > 0) {
+            $page = min($page, $totalPages);
+        }
+
+        $offset = ($page - 1) * $perPage;
+
+        $notes = $this->note->getUserNotes(
+            $userId,
+            $search,
+            $from,
+            $to,
+            $sort,
+            $perPage,
+            $offset
+        );
+
+        $auth = $this->auth;
+
+        require __DIR__ . '/../pages/home.php';
+    }
+
+    public function index()
+    {
+        $search = '';
+        $from = '';
+        $to = '';
+        $sort = 'newest';
+
+        $perPage = 6;
+        $page = 1;
+        $offset = 0;
+
+        $notes = [];
+        $totalNotes = 0;
+        $totalPages = 0;
+
+        $auth = $this->auth;
+
+        if ($auth->check()) {
+            $userId = $auth->id();
+
+            $totalNotes = $this->note->countUserNotes(
+                $userId,
+                $search,
+                $from,
+                $to
+            );
+
+            $totalPages = (int) ceil($totalNotes / $perPage);
+
+            $notes = $this->note->getUserNotes(
+                $userId,
+                $search,
+                $from,
+                $to,
+                $sort,
+                $perPage,
+                $offset
+            );
+        }
+
+        require __DIR__ . '/../pages/home.php';
+    }
 }

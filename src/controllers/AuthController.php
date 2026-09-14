@@ -53,7 +53,7 @@ class AuthController
 
         $_SESSION['errors'] = $errors;
 
-        header('Location: /?page=login');
+        header('Location: /login');
         exit;
     }
 
@@ -100,14 +100,14 @@ class AuthController
 
                 $_SESSION['message'] = 'Account created successfully. Please log in.';
 
-                header('Location: /?page=login');
+                header('Location: /login');
                 exit;
             }
         }
 
         $_SESSION['errors'] = $errors;
 
-        header('Location: /?page=signup');
+        header('Location: /signup');
         exit;
     }
 
@@ -115,7 +115,7 @@ class AuthController
     {
         $this->auth->logout();
 
-        header('Location: /?page=login');
+        header('Location: /login');
         exit;
     }
 }

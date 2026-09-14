@@ -86,7 +86,7 @@ unset($_SESSION['message']);
 
             <p class="text-center mt-4 mb-0 text-secondary">
                 Don't have an account?
-                <a href="/?page=signup" class="auth-link">Sign up</a>
+                <a href="/signup" class="auth-link">Sign up</a>
             </p>
         </div>
     </div>

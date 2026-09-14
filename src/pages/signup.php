@@ -90,7 +90,7 @@ unset($_SESSION['errors']);
 
             <p class="text-center mt-4 mb-0 text-secondary">
                 Already have an account?
-                <a href="/?page=login" class="auth-link">Login</a>
+                <a href="/login" class="auth-link">Login</a>
             </p>
         </div>
     </div>
