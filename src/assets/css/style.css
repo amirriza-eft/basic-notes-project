@@ -3,6 +3,11 @@ body {
   min-height:100%;
 }
 
+button,
+a {
+  cursor: pointer;
+}
+
 body {
   min-height:100vh;
   display:flex;
@@ -258,5 +263,101 @@ body {
 
 .btn-note-cancel:hover {
   background:rgba(255,255,255,.08);
+  color:white;
+}
+
+.note-filter {
+  background:#071426;
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:16px;
+  padding:20px;
+}
+
+.filter-input {
+  background:#10254a;
+  border:1px solid #1e3a8a;
+  color:white;
+  border-radius:10px;
+}
+
+.filter-input:focus {
+  background:#10254a;
+  color:white;
+  border-color:#3b82f6;
+  box-shadow:0 0 15px rgba(59,130,246,.3);
+}
+
+.filter-input::placeholder {
+  color:#94a3b8;
+}
+
+.filter-input option {
+  background:#10254a;
+  color:white;
+}
+
+.filter-label {
+  display:block;
+  color:#94a3b8;
+  font-size:14px;
+  font-weight:600;
+  margin-bottom:6px;
+}
+
+.btn-search {
+  background:#2563eb;
+  border:none;
+  color:white;
+  padding-left:20px;
+  padding-right:20px;
+}
+
+.btn-search:hover {
+  background:#1d4ed8;
+  color:white;
+}
+
+.btn-search-filter {
+  background:#2563eb;
+  border:none;
+  color:white;
+  border-radius:10px;
+  padding:10px 20px;
+}
+
+.btn-search-filter:hover {
+  background:#1d4ed8;
+  color:white;
+}
+
+.btn-clear-filter {
+  background:transparent;
+  border:1px solid rgba(255,255,255,.25);
+  color:#e2e8f0;
+  border-radius:10px;
+  padding:10px 20px;
+}
+
+.btn-clear-filter:hover {
+  background:rgba(255,255,255,.08);
+  border-color:rgba(255,255,255,.4);
+  color:white;
+}
+
+.pagination-link {
+  background:#10254a;
+  border-color:rgba(255,255,255,.1);
+  color:#e2e8f0;
+}
+
+.pagination-link:hover {
+  background:#1e3a8a;
+  border-color:#1e3a8a;
+  color:white;
+}
+
+.page-item.active .pagination-link {
+  background:#2563eb;
+  border-color:#2563eb;
   color:white;
 }

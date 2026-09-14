@@ -63,7 +63,6 @@ class Auth
                 'expires' => time() - 3600,
                 'path' => '/',
                 'httponly' => true,
-                'samesite' => 'Lax'
             ]
         );
 

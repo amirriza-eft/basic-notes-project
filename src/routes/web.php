@@ -22,32 +22,31 @@ function route($uri, $pdo, $auth, $note)
 $method = $_SERVER['REQUEST_METHOD'];
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
+
+// Auth Routes //
 if ($method === 'POST' && $uri === '/login') {
     $controller = new AuthController($auth, $user, $pdo);
     $controller->login();
 }
-
 if ($method === 'POST' && $uri === '/signup') {
     $controller = new AuthController($auth, $user, $pdo);
     $controller->signup();
 }
-
 if ($method === 'POST' && $uri === '/logout') {
     $controller = new AuthController($auth, $user, $pdo);
     $controller->logout();
 }
 
 
+// Note Routes //
 if ($method === 'POST' && $uri === '/notes/create') {
     $controller = new NoteController($auth, $note);
     $controller->store();
 }
-
 if ($method === 'POST' && $uri === '/notes/update') {
     $controller = new NoteController($auth, $note);
     $controller->update();
 }
-
 if ($method === 'POST' && $uri === '/notes/delete') {
     $controller = new NoteController($auth, $note);
     $controller->delete();

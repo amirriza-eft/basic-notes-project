@@ -31,22 +31,112 @@ class Note
         return $this;
     }
 
-    public function getUserNotes($userId)
-    {
+    public function getUserNotes(
+        $userId,
+        $search,
+        $from,
+        $to,
+        $sort,
+        $limit,
+        $offset
+    ) {
         $sql = "
             SELECT *
             FROM notes
             WHERE user_id = :user_id
-            ORDER BY created_at DESC
         ";
+
+        $params = [
+            "user_id" => $userId
+        ];
+
+        if ($search !== '') {
+            $sql .= "
+                AND (
+                    title LIKE :search_title
+                    OR content LIKE :search_content
+                )
+            ";
+
+            $searchValue = "%" . $search . "%";
+
+            $params["search_title"] = $searchValue;
+            $params["search_content"] = $searchValue;
+        }
+
+        if ($from !== '') {
+            $sql .= " AND created_at >= :from";
+            $params["from"] = $from . " 00:00:00";
+        }
+
+        if ($to !== '') {
+            $sql .= " AND created_at <= :to";
+            $params["to"] = $to . " 23:59:59";
+        }
+
+        if ($sort === 'oldest') {
+            $sql .= " ORDER BY created_at ASC";
+        } else {
+            $sql .= " ORDER BY created_at DESC";
+        }
+
+        $limit = (int) $limit;
+        $offset = (int) $offset;
+
+        $sql .= " LIMIT $limit OFFSET $offset";
 
         $query = $this->db->prepare($sql);
 
-        $query->execute([
-            "user_id" => $userId
-        ]);
+        $query->execute($params);
 
         return $query->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function countUserNotes(
+        $userId,
+        $search,
+        $from,
+        $to
+    ) {
+        $sql = "
+        SELECT COUNT(*)
+        FROM notes
+        WHERE user_id = :user_id
+    ";
+
+        $params = [
+            "user_id" => $userId
+        ];
+
+        if ($search !== '') {
+            $sql .= "
+            AND (
+                title LIKE :search_title
+                OR content LIKE :search_content
+            )
+        ";
+
+            $searchValue = "%" . $search . "%";
+
+            $params["search_title"] = $searchValue;
+            $params["search_content"] = $searchValue;
+        }
+
+        if ($from !== '') {
+            $sql .= " AND created_at >= :from";
+            $params["from"] = $from . " 00:00:00";
+        }
+
+        if ($to !== '') {
+            $sql .= " AND created_at <= :to";
+            $params["to"] = $to . " 23:59:59";
+        }
+
+        $query = $this->db->prepare($sql);
+
+        $query->execute($params);
+
+        return (int) $query->fetchColumn();
     }
 
     public function delete($noteId, $userId)

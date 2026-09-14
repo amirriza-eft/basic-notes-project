@@ -1,13 +1,49 @@
 <?php
 
-$notes = $note->getUserNotes(
-        $auth->id()
-);
-
 $isLoggedIn = $auth->check();
 
 $message = $_SESSION['message'] ?? null;
 unset($_SESSION['message']);
+
+$search = trim($_GET['notes_search'] ?? '');
+$from = $_GET['from'] ?? '';
+$to = $_GET['to'] ?? '';
+$sort = $_GET['notes_sort'] ?? 'newest';
+
+$perPage = 6;
+
+$page = max(
+        1,
+        (int) ($_GET['notes_page'] ?? 1)
+);
+
+$offset = ($page - 1) * $perPage;
+
+$notes = [];
+$totalNotes = 0;
+
+if ($isLoggedIn) {
+    $userId = $auth->id();
+
+    $notes = $note->getUserNotes(
+            $userId,
+            $search,
+            $from,
+            $to,
+            $sort,
+            $perPage,
+            $offset
+    );
+
+    $totalNotes = $note->countUserNotes(
+            $userId,
+            $search,
+            $from,
+            $to
+    );
+}
+
+$totalPages = (int) ceil($totalNotes / $perPage);
 
 ?>
 
@@ -64,9 +100,9 @@ unset($_SESSION['message']);
                     <input
                             type="text"
                             name="note_title"
-                            class="form-control note-input mb-3"
+                            class="form-control note-input mb-3 w-auto"
                             placeholder="Note title..."
-                            maxlength="100"
+                            maxlength="30"
                             required
                     >
                     <textarea
@@ -88,10 +124,118 @@ unset($_SESSION['message']);
                     Your Notes
                 </h3>
 
+                <form method="GET" action="/" class="note-filter mb-5">
+                    <div class="input-group mb-3">
+                        <input
+                                type="text"
+                                name="notes_search"
+                                class="form-control filter-input"
+                                placeholder="Search title or content..."
+                                value="<?= htmlspecialchars($search); ?>"
+                        >
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-12 col-md-6">
+                            <label for="from" class="filter-label">
+                                From
+                            </label>
+                            <input
+                                    type="date"
+                                    id="from"
+                                    name="from"
+                                    class="form-control filter-input"
+                                    value="<?= htmlspecialchars($from); ?>"
+                            >
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <label for="to" class="filter-label">
+                                To
+                            </label>
+                            <input
+                                    type="date"
+                                    id="to"
+                                    name="to"
+                                    class="form-control filter-input"
+                                    value="<?= htmlspecialchars($to); ?>"
+                            >
+                        </div>
+                    </div>
+
+                    <div class="row align-items-end g-3">
+                        <div class="col-12 col-md-6">
+                            <div class="d-flex gap-2">
+                                <button
+                                        type="submit"
+                                        class="btn btn-search-filter"
+                                >
+                                    Search
+                                </button>
+                                <a
+                                        href="/"
+                                        class="btn btn-clear-filter"
+                                >
+                                    Clear
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <form method="GET" action="/" class="mb-4">
+                    <input
+                            type="hidden"
+                            name="notes_search"
+                            value="<?= htmlspecialchars($search); ?>"
+                    >
+                    <input
+                            type="hidden"
+                            name="from"
+                            value="<?= htmlspecialchars($from); ?>"
+                    >
+                    <input
+                            type="hidden"
+                            name="to"
+                            value="<?= htmlspecialchars($to); ?>"
+                    >
+                    <input
+                            type="hidden"
+                            name="notes_page"
+                            value="1"
+                    >
+                    <label for="notes_sort" class="filter-label">
+                        Sort by
+                    </label>
+                    <select
+                            id="notes_sort"
+                            name="notes_sort"
+                            class="form-select filter-input w-auto"
+                            onchange="this.form.submit()"
+                    >
+                        <option
+                                value="newest"
+                                <?= $sort === 'newest' ? 'selected' : ''; ?>
+                        >
+                            Newest
+                        </option>
+                        <option
+                                value="oldest"
+                                <?= $sort === 'oldest' ? 'selected' : ''; ?>
+                        >
+                            Oldest
+                        </option>
+                    </select>
+                </form>
+
                 <?php if (empty($notes)): ?>
 
                     <div class="empty">
-                        You have no notes yet. Start by adding a new note above.
+                        <?php if ($search !== '' || $from !== '' || $to !== ''): ?>
+                            No notes found matching your filters.
+                        <?php else: ?>
+                            You have no notes yet. Start by adding a new note above.
+                        <?php endif; ?>
                     </div>
 
                 <?php else: ?>
@@ -197,6 +341,47 @@ unset($_SESSION['message']);
                             </div>
                         <?php endforeach; ?>
                     </div>
+
+                    <?php if ($totalPages > 1): ?>
+                        <nav class="mt-5" aria-label="Notes pagination">
+                            <ul class="pagination justify-content-center">
+                                <?php if ($page > 1): ?>
+                                    <li class="page-item">
+                                        <a
+                                                class="page-link pagination-link"
+                                                href="?notes_search=<?= urlencode($search); ?>&from=<?= urlencode($from); ?>&to=<?= urlencode($to); ?>&notes_sort=<?= urlencode($sort); ?>&notes_page=<?= $page - 1; ?>"
+                                        >
+                                            ← Previous
+                                        </a>
+                                    </li>
+                                <?php endif; ?>
+
+                                <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                                    <li
+                                            class="page-item <?= $i === $page ? 'active' : ''; ?>"
+                                    >
+                                        <a
+                                                class="page-link pagination-link"
+                                                href="?notes_search=<?= urlencode($search); ?>&from=<?= urlencode($from); ?>&to=<?= urlencode($to); ?>&notes_sort=<?= urlencode($sort); ?>&notes_page=<?= $i; ?>"
+                                        >
+                                            <?= $i; ?>
+                                        </a>
+                                    </li>
+                                <?php endfor; ?>
+
+                                <?php if ($page < $totalPages): ?>
+                                    <li class="page-item">
+                                        <a
+                                                class="page-link pagination-link"
+                                                href="?notes_search=<?= urlencode($search); ?>&from=<?= urlencode($from); ?>&to=<?= urlencode($to); ?>&notes_sort=<?= urlencode($sort); ?>&notes_page=<?= $page + 1; ?>"
+                                        >
+                                            Next →
+                                        </a>
+                                    </li>
+                                <?php endif; ?>
+                            </ul>
+                        </nav>
+                    <?php endif; ?>
                 <?php endif; ?>
             <?php endif; ?>
         </div>
