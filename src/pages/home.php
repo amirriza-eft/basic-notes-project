@@ -124,8 +124,8 @@ unset($_SESSION['message']);
                     </div>
 
                     <div class="row align-items-end g-3">
-                        <div class="col-12 col-md-6">
-                            <div class="d-flex gap-2">
+                        <div class="col-12">
+                            <div class="d-flex justify-content-center gap-2">
                                 <button
                                         type="submit"
                                         class="btn btn-search-filter"
