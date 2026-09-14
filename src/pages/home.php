@@ -1,16 +1,10 @@
 <?php
 
-$db = new DB();
-
-$note = new Note($db->getConnection());
-
 $notes = $note->getUserNotes(
         $auth->id()
 );
 
-
 $isLoggedIn = $auth->check();
-
 
 $message = $_SESSION['message'] ?? null;
 unset($_SESSION['message']);

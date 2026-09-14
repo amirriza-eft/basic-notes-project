@@ -44,7 +44,6 @@ function createRememberToken($pdo, $userId)
         [
             "expires" => time() + (60 * 60 * 24 * 30),
             "httponly" => true,
-            "samesite" => "Lax"
         ]
     );
 }

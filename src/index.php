@@ -28,5 +28,6 @@ require_once __DIR__ . "/routes/web.php";
 route(
     $_GET['page'] ?? "/",
     $pdo,
-    $auth
+    $auth,
+    $note
 );

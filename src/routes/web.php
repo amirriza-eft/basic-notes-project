@@ -6,7 +6,7 @@ $routes = array(
     'signup' => 'signup.php',
 );
 
-function route($uri, $pdo, $auth)
+function route($uri, $pdo, $auth, $note)
 {
     global $routes;
 
