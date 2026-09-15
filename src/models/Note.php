@@ -9,11 +9,11 @@ class Note
         $this->db = $db;
     }
 
-    public function create($user_id, $title, $content)
+    public function create($user_id, $title, $content, $isGlobal)
     {
         $sql = "
-        INSERT INTO notes(user_id, title, content)
-        VALUES(:user_id, :title, :content)
+        INSERT INTO notes(user_id, title, content, is_global)
+        VALUES(:user_id, :title, :content, :is_global)
         ";
 
         $query = $this->db->prepare($sql);
@@ -21,18 +21,21 @@ class Note
         $query->execute([
             "user_id" => $user_id,
             "title" => $title,
-            "content" => $content
+            "content" => $content,
+            "is_global" => $isGlobal
         ]);
 
         $this->id = (int) $this->db->lastInsertId();
         $this->title = $title;
         $this->content = $content;
+        $this->is_global = $isGlobal;
 
         return $this;
     }
 
-    public function getUserNotes(
+    public function getNotes(
         $userId,
+        $scope,
         $search,
         $from,
         $to,
@@ -41,14 +44,24 @@ class Note
         $offset
     ) {
         $sql = "
-            SELECT *
+            SELECT notes.*, users.full_name AS creator_name
             FROM notes
-            WHERE user_id = :user_id
+            INNER JOIN users ON users.id = notes.user_id
         ";
 
-        $params = [
-            "user_id" => $userId
-        ];
+        $params = [];
+
+        if ($scope === 'private') {
+            $sql .= "
+                WHERE user_id = :user_id
+            ";
+
+            $params["user_id"] = $userId;
+        } else {
+            $sql .= "
+                WHERE is_global = 1
+            ";
+        }
 
         if ($search !== '') {
             $sql .= "
@@ -75,9 +88,9 @@ class Note
         }
 
         if ($sort === 'oldest') {
-            $sql .= " ORDER BY created_at ASC";
+            $sql .= " ORDER BY notes.created_at ASC";
         } else {
-            $sql .= " ORDER BY created_at DESC";
+            $sql .= " ORDER BY notes.created_at DESC";
         }
 
         $limit = (int) $limit;
@@ -92,8 +105,9 @@ class Note
         return $query->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function countUserNotes(
+    public function countNotes(
         $userId,
+        $scope,
         $search,
         $from,
         $to
@@ -101,20 +115,29 @@ class Note
         $sql = "
         SELECT COUNT(*)
         FROM notes
-        WHERE user_id = :user_id
     ";
 
-        $params = [
-            "user_id" => $userId
-        ];
+        $params = [];
+
+        if ($scope === 'private') {
+            $sql .= "
+                WHERE user_id = :user_id
+            ";
+
+            $params["user_id"] = $userId;
+        } else {
+            $sql .= "
+                WHERE is_global = 1
+            ";
+        }
 
         if ($search !== '') {
             $sql .= "
-            AND (
-                title LIKE :search_title
-                OR content LIKE :search_content
-            )
-        ";
+                AND (
+                    title LIKE :search_title
+                    OR content LIKE :search_content
+                )
+            ";
 
             $searchValue = "%" . $search . "%";
 

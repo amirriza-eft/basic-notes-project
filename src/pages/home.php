@@ -71,7 +71,30 @@ $scope = $scope ?? 'private';
             <!-- GUEST -->
             <!-- ========================= -->
 
-            <?php if (!$isLoggedIn): ?>
+            <?php if (!$isLoggedIn && $scope !== 'global'): ?>
+
+                <div class="d-flex justify-content-center mb-3">
+
+                    <div class="btn-group" role="group" aria-label="Note scope">
+
+                        <a
+                                href="/"
+                                class="btn btn-primary"
+                        >
+                            Personal
+                        </a>
+
+                        <a
+                                href="/notes/search?scope=global"
+                                class="btn btn-outline-primary"
+                        >
+                            Global
+                        </a>
+
+                    </div>
+
+                </div>
+
 
                 <div class="empty guest-box">
 
@@ -86,40 +109,42 @@ $scope = $scope ?? 'private';
 
             <?php else: ?>
 
-
                 <!-- ========================= -->
                 <!-- ACTION BUTTONS -->
                 <!-- ========================= -->
 
-                <div class="d-flex justify-content-center gap-2 mb-4">
+                <?php if ($isLoggedIn): ?>
 
-                    <button
-                            type="button"
-                            class="btn btn-primary btn-add"
-                            data-bs-toggle="modal"
-                            data-bs-target="#addNoteModal"
-                    >
-                        + Add Note
-                    </button>
+                    <div class="d-flex justify-content-between align-items-center mb-2">
 
+                        <button
+                                type="button"
+                                class="btn btn-primary btn-add"
+                                data-bs-toggle="modal"
+                                data-bs-target="#addNoteModal"
+                        >
+                            + Add Note
+                        </button>
 
-                    <button
-                            type="button"
-                            class="btn btn-secondary"
-                            data-bs-toggle="modal"
-                            data-bs-target="#searchModal"
-                    >
-                        Search
-                    </button>
+                        <button
+                                type="button"
+                                class="btn btn-secondary"
+                                data-bs-toggle="modal"
+                                data-bs-target="#searchModal"
+                        >
+                            Search
+                        </button>
 
-                </div>
+                    </div>
+
+                <?php endif; ?>
 
 
                 <!-- ========================= -->
                 <!-- PRIVATE / GLOBAL -->
                 <!-- ========================= -->
 
-                <div class="d-flex justify-content-center mb-5">
+                <div class="d-flex justify-content-center mb-1">
 
                     <div
                             class="btn-group"
@@ -133,7 +158,7 @@ $scope = $scope ?? 'private';
                                         ? 'btn-primary'
                                         : 'btn-outline-primary'; ?>"
                         >
-                            Private
+                            Personal
                         </a>
 
 
@@ -480,7 +505,7 @@ $scope = $scope ?? 'private';
 
                         <?= $scope === 'global'
                                 ? 'Global Notes'
-                                : 'Private Notes'; ?>
+                                : 'My Notes'; ?>
 
                     </h3>
 
@@ -596,7 +621,7 @@ $scope = $scope ?? 'private';
 
                             <?php else: ?>
 
-                                You have no private notes yet.
+                                You have no notes yet.
 
 
                             <?php endif; ?>
@@ -622,30 +647,33 @@ $scope = $scope ?? 'private';
 
                                 <div class="note-card">
 
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
 
-                                    <!-- TITLE -->
+                                        <div class="note-type <?= $note['is_global'] ? 'note-global' : 'note-private'; ?>">
+                                            <?= $note['is_global'] ? 'Global' : 'Private'; ?>
+                                        </div>
 
-                                    <h5 class="note-title">
-
-                                        <?= htmlspecialchars(
-                                                $note['title']
-                                        ); ?>
-
-                                    </h5>
-
-
-                                    <!-- CONTENT -->
-
-                                    <div class="note-text mb-4">
-
-                                        <?= htmlspecialchars(
-                                                $note['content']
-                                        ); ?>
+                                        <div class="note-creator <?= $note['user_id'] == $auth->id() ? 'note-owner' : ''; ?>">
+                                            <?php if ($note['user_id'] == $auth->id()): ?>
+                                                Your note
+                                            <?php else: ?>
+                                                <?= htmlspecialchars($note['creator_name']); ?>
+                                            <?php endif; ?>
+                                        </div>
 
                                     </div>
 
+                                    <h5 class="note-title">
+                                        <?= htmlspecialchars(
+                                                $note['title']
+                                        ); ?>
+                                    </h5>
 
-                                    <!-- DATE -->
+                                    <div class="note-text mb-4">
+                                        <?= htmlspecialchars(
+                                                $note['content']
+                                        ); ?>
+                                    </div>
 
                                     <small class="note-meta d-block mb-3">
 
@@ -663,45 +691,49 @@ $scope = $scope ?? 'private';
 
                                     <!-- ACTIONS -->
 
-                                    <div class="d-flex gap-2">
+                                    <?php if ($note['user_id'] == $auth->id()): ?>
 
+                                        <div class="d-flex gap-2">
 
-                                        <!-- EDIT -->
-
-                                        <button
-                                                type="button"
-                                                class="btn-note-edit"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#editNoteModal<?= $note['id']; ?>"
-                                        >
-                                            Edit
-                                        </button>
-
-
-                                        <!-- DELETE -->
-
-                                        <form
-                                                method="POST"
-                                                action="/notes/delete"
-                                        >
-
-                                            <input
-                                                    type="hidden"
-                                                    name="id"
-                                                    value="<?= $note['id']; ?>"
-                                            >
-
+                                            <!-- EDIT -->
 
                                             <button
-                                                    type="submit"
-                                                    class="btn-note-delete"
+                                                    type="button"
+                                                    class="btn-note-edit"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#editNoteModal<?= $note['id']; ?>"
                                             >
-                                                Delete
+                                                Edit
                                             </button>
 
-                                        </form>
 
-                                    </div>
+                                            <!-- DELETE -->
+
+                                            <!-- DELETE -->
+
+                                            <form
+                                                    method="POST"
+                                                    action="/notes/delete"
+                                            >
+                                                <input
+                                                        type="hidden"
+                                                        name="id"
+                                                        value="<?= $note['id']; ?>"
+                                                >
+
+                                                <button
+                                                        type="button"
+                                                        class="btn-note-delete"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#deleteNoteModal<?= $note['id']; ?>"
+                                                >
+                                                    Delete
+                                                </button>
+                                            </form>
+
+                                        </div>
+
+                                    <?php endif; ?>
 
                                 </div>
 
@@ -850,6 +882,99 @@ $scope = $scope ?? 'private';
                                         </div>
 
                                     </form>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    <?php endforeach; ?>
+
+
+                    <!-- ========================= -->
+                    <!-- DELETE MODALS -->
+                    <!-- ========================= -->
+
+                    <?php foreach ($notes as $note): ?>
+
+                        <div
+                                class="modal fade"
+                                id="deleteNoteModal<?= $note['id']; ?>"
+                                tabindex="-1"
+                                aria-labelledby="deleteNoteModalLabel<?= $note['id']; ?>"
+                                aria-hidden="true"
+                        >
+
+                            <div class="modal-dialog modal-dialog-centered">
+
+                                <div class="modal-content dark-modal">
+
+                                    <!-- HEADER -->
+
+                                    <div class="modal-header">
+
+                                        <h5
+                                                class="modal-title"
+                                                id="deleteNoteModalLabel<?= $note['id']; ?>"
+                                        >
+                                            Delete Note
+                                        </h5>
+
+                                        <button
+                                                type="button"
+                                                class="btn-close btn-close-white"
+                                                data-bs-dismiss="modal"
+                                                aria-label="Close"
+                                        ></button>
+
+                                    </div>
+
+
+                                    <!-- BODY -->
+
+                                    <div class="modal-body">
+
+                                        <p class="mb-0">
+                                            Are you sure you want to delete this note?
+                                        </p>
+
+                                    </div>
+
+
+                                    <!-- FOOTER -->
+
+                                    <div class="modal-footer">
+
+                                        <button
+                                                type="button"
+                                                class="btn-modal-cancel"
+                                                data-bs-dismiss="modal"
+                                        >
+                                            Cancel
+                                        </button>
+
+                                        <form
+                                                method="POST"
+                                                action="/notes/delete"
+                                        >
+
+                                            <input
+                                                    type="hidden"
+                                                    name="id"
+                                                    value="<?= $note['id']; ?>"
+                                            >
+
+                                            <button
+                                                    type="submit"
+                                                    class="btn-note-delete"
+                                            >
+                                                Delete
+                                            </button>
+
+                                        </form>
+
+                                    </div>
 
                                 </div>
 

@@ -145,10 +145,16 @@ body {
   border-radius:10px;
 }
 
-.btn-add {
-  background:#2563eb;
-  border:none;
-  border-radius:12px;
+.btn-add,
+.btn-secondary {
+  padding: 9px 18px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.btn-group .btn {
+  padding: 8px 18px;
+  font-weight: 600;
 }
 
 .btn-add:hover {
@@ -180,6 +186,33 @@ body {
 .note-card:hover {
   transform:translateY(-5px);
   box-shadow:0 15px 35px rgba(0,0,0,.35);
+}
+
+.note-creator {
+  font-size: 0.99rem;
+  font-weight: 500;
+  opacity: 0.7;
+}
+
+.note-owner {
+  font-weight: bold;
+  color: lightgreen;
+  opacity: 1;
+}
+
+.note-type {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.note-private {
+  color: orange;
+}
+
+.note-global {
+  color: lightseagreen;
 }
 
 .note-title {

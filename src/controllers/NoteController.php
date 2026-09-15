@@ -15,6 +15,7 @@ class NoteController
     public function store()
     {
         $userId = $this->auth->id();
+        $isGlobal = isset($_POST['is_global']) ? 1 : 0;
 
         if (!NotePolicy::create($userId)) {
             $_SESSION['message'] = "You don't have permission to create note.";
@@ -46,7 +47,8 @@ class NoteController
         $this->note->create(
             $userId,
             $title,
-            $content
+            $content,
+            $isGlobal
         );
 
         $_SESSION['message'] = "Note created successfully.";
@@ -147,12 +149,19 @@ class NoteController
 
     public function search()
     {
-        $userId = $this->auth->id();
+        $userId = $this->auth->check()
+            ? $this->auth->id()
+            : null;
 
         $search = trim($_GET['notes_search'] ?? '');
         $from = $_GET['from'] ?? '';
         $to = $_GET['to'] ?? '';
         $sort = $_GET['notes_sort'] ?? 'newest';
+        $scope = $_GET['scope'] ?? 'private';
+
+        if (!in_array($scope, ['private', 'global'], true)) {
+            $scope = 'private';
+        }
 
         $perPage = 6;
 
@@ -161,30 +170,39 @@ class NoteController
             (int) ($_GET['notes_page'] ?? 1)
         );
 
-        $totalNotes = $this->note->countUserNotes(
-            $userId,
-            $search,
-            $from,
-            $to
-        );
+        if (!$this->auth->check() && $scope === 'private') {
+            $notes = [];
+            $totalNotes = 0;
+            $totalPages = 0;
+        } else {
 
-        $totalPages = (int) ceil($totalNotes / $perPage);
+            $totalNotes = $this->note->countNotes(
+                $userId,
+                $scope,
+                $search,
+                $from,
+                $to
+            );
 
-        if ($totalPages > 0) {
-            $page = min($page, $totalPages);
+            $totalPages = (int) ceil($totalNotes / $perPage);
+
+            if ($totalPages > 0) {
+                $page = min($page, $totalPages);
+            }
+
+            $offset = ($page - 1) * $perPage;
+
+            $notes = $this->note->getNotes(
+                $userId,
+                $scope,
+                $search,
+                $from,
+                $to,
+                $sort,
+                $perPage,
+                $offset
+            );
         }
-
-        $offset = ($page - 1) * $perPage;
-
-        $notes = $this->note->getUserNotes(
-            $userId,
-            $search,
-            $from,
-            $to,
-            $sort,
-            $perPage,
-            $offset
-        );
 
         $auth = $this->auth;
 
@@ -197,6 +215,7 @@ class NoteController
         $from = '';
         $to = '';
         $sort = 'newest';
+        $scope = 'private';
 
         $perPage = 6;
         $page = 1;
@@ -209,10 +228,12 @@ class NoteController
         $auth = $this->auth;
 
         if ($auth->check()) {
-            $userId = $auth->id();
 
-            $totalNotes = $this->note->countUserNotes(
+            $userId = $this->auth->id();
+
+            $totalNotes = $this->note->countNotes(
                 $userId,
+                $scope,
                 $search,
                 $from,
                 $to
@@ -220,8 +241,9 @@ class NoteController
 
             $totalPages = (int) ceil($totalNotes / $perPage);
 
-            $notes = $this->note->getUserNotes(
+            $notes = $this->note->getNotes(
                 $userId,
+                $scope,
                 $search,
                 $from,
                 $to,
@@ -229,6 +251,7 @@ class NoteController
                 $perPage,
                 $offset
             );
+
         }
 
         require __DIR__ . '/../pages/home.php';
