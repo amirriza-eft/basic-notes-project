@@ -13,89 +13,55 @@ $scope = $scope ?? 'private';
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
-
     <meta
             name="viewport"
             content="width=device-width, initial-scale=1.0"
     >
-
     <title>Notes</title>
 
-    <link
-            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-            rel="stylesheet"
-    >
-
-    <link
-            href="/assets/css/style.css"
-            rel="stylesheet"
-    >
-
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"  rel="stylesheet">
+    <link href="/assets/css/style.css" rel="stylesheet">
 </head>
-
 
 <body>
 
-
 <?php include __DIR__ . "/../components/header.php"; ?>
 
-
 <main class="page-content">
-
     <div class="container py-5">
-
         <div class="main-card p-4 p-md-5">
 
-
             <!-- PAGE TITLE -->
-
             <h1 class="text-center title mb-4">
                 Notes
             </h1>
 
-
             <!-- FLASH MESSAGE -->
-
             <?php if ($message): ?>
-
                 <div class="alert alert-success text-center">
                     <?= htmlspecialchars($message); ?>
                 </div>
-
             <?php endif; ?>
 
-
-            <!-- ========================= -->
             <!-- GUEST -->
-            <!-- ========================= -->
-
             <?php if (!$isLoggedIn && $scope !== 'global'): ?>
-
                 <div class="d-flex justify-content-center mb-3">
-
                     <div class="btn-group" role="group" aria-label="Note scope">
-
                         <a
                                 href="/"
                                 class="btn btn-primary"
                         >
                             Personal
                         </a>
-
                         <a
                                 href="/notes/search?scope=global"
                                 class="btn btn-outline-primary"
                         >
                             Global
                         </a>
-
                     </div>
-
                 </div>
-
-
                 <div class="empty guest-box">
 
                     Please
@@ -105,18 +71,11 @@ $scope = $scope ?? 'private';
                     to create and manage your notes.
 
                 </div>
-
-
             <?php else: ?>
 
-                <!-- ========================= -->
                 <!-- ACTION BUTTONS -->
-                <!-- ========================= -->
-
                 <?php if ($isLoggedIn): ?>
-
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-
+                    <div class="d-flex justify-content-between align-items-center mb-4">
                         <button
                                 type="button"
                                 class="btn btn-primary btn-add"
@@ -125,7 +84,6 @@ $scope = $scope ?? 'private';
                         >
                             + Add Note
                         </button>
-
                         <button
                                 type="button"
                                 class="btn btn-secondary"
@@ -134,24 +92,16 @@ $scope = $scope ?? 'private';
                         >
                             Search
                         </button>
-
                     </div>
-
                 <?php endif; ?>
 
-
-                <!-- ========================= -->
                 <!-- PRIVATE / GLOBAL -->
-                <!-- ========================= -->
-
                 <div class="d-flex justify-content-center mb-1">
-
                     <div
                             class="btn-group"
                             role="group"
                             aria-label="Note scope"
                     >
-
                         <a
                                 href="/"
                                 class="btn <?= $scope === 'private'
@@ -160,8 +110,6 @@ $scope = $scope ?? 'private';
                         >
                             Personal
                         </a>
-
-
                         <a
                                 href="/notes/search?scope=global"
                                 class="btn <?= $scope === 'global'
@@ -170,403 +118,68 @@ $scope = $scope ?? 'private';
                         >
                             Global
                         </a>
-
                     </div>
-
                 </div>
 
-
-                <!-- ========================= -->
                 <!-- ADD NOTE MODAL -->
-                <!-- ========================= -->
+                <?php include __DIR__ . "/../components/addNoteModal.php"; ?>
 
-                <div
-                        class="modal fade"
-                        id="addNoteModal"
-                        tabindex="-1"
-                        aria-labelledby="addNoteModalLabel"
-                        aria-hidden="true"
-                >
-
-                    <div class="modal-dialog modal-dialog-centered">
-
-                        <div class="modal-content dark-modal">
-
-
-                            <!-- MODAL HEADER -->
-
-                            <div class="modal-header">
-
-                                <h5
-                                        class="modal-title"
-                                        id="addNoteModalLabel"
-                                >
-                                    Add Note
-                                </h5>
-
-
-                                <button
-                                        type="button"
-                                        class="btn-close btn-close-white"
-                                        data-bs-dismiss="modal"
-                                        aria-label="Close"
-                                ></button>
-
-                            </div>
-
-
-                            <!-- FORM -->
-
-                            <form
-                                    method="POST"
-                                    action="/notes/create"
-                            >
-
-                                <div class="modal-body">
-
-
-                                    <!-- TITLE -->
-
-                                    <div class="mb-3">
-
-                                        <label
-                                                for="note_title"
-                                                class="form-label"
-                                        >
-                                            Title
-                                        </label>
-
-
-                                        <input
-                                                type="text"
-                                                id="note_title"
-                                                name="note_title"
-                                                class="form-control modal-input"
-                                                placeholder="Note title..."
-                                                maxlength="30"
-                                                required
-                                        >
-
-                                    </div>
-
-
-                                    <!-- CONTENT -->
-
-                                    <div class="mb-3">
-
-                                        <label
-                                                for="note"
-                                                class="form-label"
-                                        >
-                                            Content
-                                        </label>
-
-
-                                        <textarea
-                                                id="note"
-                                                name="note"
-                                                class="form-control modal-input"
-                                                rows="5"
-                                                maxlength="300"
-                                                placeholder="Write your note here..."
-                                                required
-                                        ></textarea>
-
-                                    </div>
-
-
-                                    <!-- GLOBAL -->
-
-                                    <div class="form-check">
-
-                                        <input
-                                                type="checkbox"
-                                                id="is_global"
-                                                name="is_global"
-                                                value="1"
-                                                class="form-check-input"
-                                        >
-
-
-                                        <label
-                                                for="is_global"
-                                                class="form-check-label"
-                                        >
-                                            Make this note global
-                                        </label>
-
-                                    </div>
-
-                                </div>
-
-
-                                <!-- MODAL FOOTER -->
-
-                                <div class="modal-footer">
-
-                                    <button
-                                            type="button"
-                                            class="btn-modal-cancel"
-                                            data-bs-dismiss="modal"
-                                    >
-                                        Cancel
-                                    </button>
-
-
-                                    <button
-                                            type="submit"
-                                            class="btn-modal-save"
-                                    >
-                                        Add Note
-                                    </button>
-
-                                </div>
-
-                            </form>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <!-- ========================= -->
                 <!-- SEARCH MODAL -->
-                <!-- ========================= -->
+                <?php include __DIR__ . "/../components/searchNoteModal.php"; ?>
 
-                <div
-                        class="modal fade"
-                        id="searchModal"
-                        tabindex="-1"
-                        aria-labelledby="searchModalLabel"
-                        aria-hidden="true"
-                >
-
-                    <div class="modal-dialog modal-dialog-centered">
-
-                        <div class="modal-content dark-modal">
-
-
-                            <!-- HEADER -->
-
-                            <div class="modal-header">
-
-                                <h5
-                                        class="modal-title"
-                                        id="searchModalLabel"
-                                >
-                                    Search Notes
-                                </h5>
-
-
-                                <button
-                                        type="button"
-                                        class="btn-close btn-close-white"
-                                        data-bs-dismiss="modal"
-                                        aria-label="Close"
-                                ></button>
-
-                            </div>
-
-
-                            <!-- FORM -->
-
-                            <form
-                                    method="GET"
-                                    action="/notes/search"
-                            >
-
-                                <div class="modal-body">
-
-
-                                    <!-- SEARCH -->
-
-                                    <div class="mb-3">
-
-                                        <label
-                                                for="notes_search"
-                                                class="form-label"
-                                        >
-                                            Search
-                                        </label>
-
-
-                                        <input
-                                                type="text"
-                                                id="notes_search"
-                                                name="notes_search"
-                                                class="form-control modal-input"
-                                                placeholder="Search title or content..."
-                                                value="<?= htmlspecialchars($search); ?>"
-                                        >
-
-                                    </div>
-
-
-                                    <!-- DATES -->
-
-                                    <div class="row g-3">
-
-                                        <div class="col-12 col-md-6">
-
-                                            <label
-                                                    for="from"
-                                                    class="form-label"
-                                            >
-                                                From
-                                            </label>
-
-
-                                            <input
-                                                    type="date"
-                                                    id="from"
-                                                    name="from"
-                                                    class="form-control modal-input"
-                                                    value="<?= htmlspecialchars($from); ?>"
-                                            >
-
-                                        </div>
-
-
-                                        <div class="col-12 col-md-6">
-
-                                            <label
-                                                    for="to"
-                                                    class="form-label"
-                                            >
-                                                To
-                                            </label>
-
-
-                                            <input
-                                                    type="date"
-                                                    id="to"
-                                                    name="to"
-                                                    class="form-control modal-input"
-                                                    value="<?= htmlspecialchars($to); ?>"
-                                            >
-
-                                        </div>
-
-                                    </div>
-
-
-                                    <!-- KEEP CURRENT SCOPE -->
-
-                                    <input
-                                            type="hidden"
-                                            name="scope"
-                                            value="<?= htmlspecialchars($scope); ?>"
-                                    >
-
-                                </div>
-
-
-                                <!-- FOOTER -->
-
-                                <div class="modal-footer">
-
-                                    <a
-                                            href="/"
-                                            class="btn-modal-cancel"
-                                    >
-                                        Clear
-                                    </a>
-
-
-                                    <button
-                                            type="submit"
-                                            class="btn-modal-save"
-                                    >
-                                        Search
-                                    </button>
-
-                                </div>
-
-                            </form>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <!-- ========================= -->
                 <!-- NOTES HEADER -->
-                <!-- ========================= -->
-
                 <div
                         class="d-flex justify-content-between align-items-center mb-4"
                 >
 
                     <h3 class="mb-0">
-
                         <?= $scope === 'global'
                                 ? 'Global Notes'
                                 : 'My Notes'; ?>
-
                     </h3>
 
-
                     <!-- SORT -->
-
                     <form
                             method="GET"
                             action="/notes/search"
                     >
-
                         <input
                                 type="hidden"
                                 name="scope"
                                 value="<?= htmlspecialchars($scope); ?>"
                         >
-
-
                         <input
                                 type="hidden"
                                 name="notes_search"
                                 value="<?= htmlspecialchars($search); ?>"
                         >
-
-
                         <input
                                 type="hidden"
                                 name="from"
                                 value="<?= htmlspecialchars($from); ?>"
                         >
-
-
                         <input
                                 type="hidden"
                                 name="to"
                                 value="<?= htmlspecialchars($to); ?>"
                         >
-
-
                         <input
                                 type="hidden"
                                 name="notes_page"
                                 value="1"
                         >
-
-
                         <label
                                 for="notes_sort"
                                 class="filter-label"
                         >
                             Sort by
                         </label>
-
-
                         <select
                                 id="notes_sort"
                                 name="notes_sort"
                                 class="form-select filter-input w-auto"
                                 onchange="this.form.submit()"
                         >
-
                             <option
                                     value="newest"
                                     <?= $sort === 'newest'
@@ -575,8 +188,6 @@ $scope = $scope ?? 'private';
                             >
                                 Newest
                             </option>
-
-
                             <option
                                     value="oldest"
                                     <?= $sort === 'oldest'
@@ -585,74 +196,41 @@ $scope = $scope ?? 'private';
                             >
                                 Oldest
                             </option>
-
                         </select>
-
                     </form>
-
                 </div>
 
-
-                <!-- ========================= -->
                 <!-- NOTES -->
-                <!-- ========================= -->
-
                 <?php if (empty($notes)): ?>
-
-
                     <div class="empty">
-
                         <?php if (
                                 $search !== ''
                                 || $from !== ''
                                 || $to !== ''
                         ): ?>
-
                             No notes found matching your filters.
-
-
                         <?php else: ?>
 
-
                             <?php if ($scope === 'global'): ?>
-
                                 No global notes yet.
-
-
                             <?php else: ?>
-
                                 You have no notes yet.
-
-
                             <?php endif; ?>
 
-
                         <?php endif; ?>
-
                     </div>
-
-
                 <?php else: ?>
 
 
-                    <!-- ========================= -->
                     <!-- NOTE CARDS -->
-                    <!-- ========================= -->
-
                     <div class="row g-4">
-
                         <?php foreach ($notes as $note): ?>
-
                             <div class="col-12 col-md-6">
-
                                 <div class="note-card">
-
                                     <div class="d-flex justify-content-between align-items-center mb-2">
-
                                         <div class="note-type <?= $note['is_global'] ? 'note-global' : 'note-private'; ?>">
                                             <?= $note['is_global'] ? 'Global' : 'Private'; ?>
                                         </div>
-
                                         <div class="note-creator <?= $note['user_id'] == $auth->id() ? 'note-owner' : ''; ?>">
                                             <?php if ($note['user_id'] == $auth->id()): ?>
                                                 Your note
@@ -660,7 +238,6 @@ $scope = $scope ?? 'private';
                                                 <?= htmlspecialchars($note['creator_name']); ?>
                                             <?php endif; ?>
                                         </div>
-
                                     </div>
 
                                     <h5 class="note-title">
@@ -676,27 +253,19 @@ $scope = $scope ?? 'private';
                                     </div>
 
                                     <small class="note-meta d-block mb-3">
-
                                         Created:
-
                                         <?= date(
                                                 'M j, Y \a\t H:i',
                                                 strtotime(
                                                         $note['created_at']
                                                 )
                                         ); ?>
-
                                     </small>
 
-
                                     <!-- ACTIONS -->
-
                                     <?php if ($note['user_id'] == $auth->id()): ?>
-
                                         <div class="d-flex gap-2">
-
                                             <!-- EDIT -->
-
                                             <button
                                                     type="button"
                                                     class="btn-note-edit"
@@ -706,11 +275,7 @@ $scope = $scope ?? 'private';
                                                 Edit
                                             </button>
 
-
                                             <!-- DELETE -->
-
-                                            <!-- DELETE -->
-
                                             <form
                                                     method="POST"
                                                     action="/notes/delete"
@@ -720,7 +285,6 @@ $scope = $scope ?? 'private';
                                                         name="id"
                                                         value="<?= $note['id']; ?>"
                                                 >
-
                                                 <button
                                                         type="button"
                                                         class="btn-note-delete"
@@ -730,29 +294,15 @@ $scope = $scope ?? 'private';
                                                     Delete
                                                 </button>
                                             </form>
-
                                         </div>
-
                                     <?php endif; ?>
-
                                 </div>
-
                             </div>
-
                         <?php endforeach; ?>
-
                     </div>
 
-
-                    <!-- ========================= -->
                     <!-- EDIT MODALS -->
-                    <!-- IMPORTANT:
-                         These are OUTSIDE the note cards.
-                    -->
-                    <!-- ========================= -->
-
                     <?php foreach ($notes as $note): ?>
-
                         <div
                                 class="modal fade"
                                 id="editNoteModal<?= $note['id']; ?>"
@@ -760,16 +310,10 @@ $scope = $scope ?? 'private';
                                 aria-labelledby="editNoteModalLabel<?= $note['id']; ?>"
                                 aria-hidden="true"
                         >
-
                             <div class="modal-dialog modal-dialog-centered">
-
                                 <div class="modal-content dark-modal">
-
-
                                     <!-- HEADER -->
-
                                     <div class="modal-header">
-
                                         <h5
                                                 class="modal-title"
                                                 id="editNoteModalLabel<?= $note['id']; ?>"
@@ -777,45 +321,34 @@ $scope = $scope ?? 'private';
                                             Edit Note
                                         </h5>
 
-
                                         <button
                                                 type="button"
                                                 class="btn-close btn-close-white"
                                                 data-bs-dismiss="modal"
                                                 aria-label="Close"
                                         ></button>
-
                                     </div>
 
-
                                     <!-- FORM -->
-
                                     <form
                                             method="POST"
                                             action="/notes/update"
                                     >
-
                                         <div class="modal-body">
-
                                             <input
                                                     type="hidden"
                                                     name="id"
                                                     value="<?= $note['id']; ?>"
                                             >
 
-
                                             <!-- TITLE -->
-
                                             <div class="mb-3">
-
                                                 <label
                                                         for="updated_title_<?= $note['id']; ?>"
                                                         class="form-label"
                                                 >
                                                     Title
                                                 </label>
-
-
                                                 <input
                                                         type="text"
                                                         id="updated_title_<?= $note['id']; ?>"
@@ -827,21 +360,16 @@ $scope = $scope ?? 'private';
                                                         maxlength="30"
                                                         required
                                                 >
-
                                             </div>
 
-
                                             <!-- CONTENT -->
-
                                             <div class="mb-3">
-
                                                 <label
                                                         for="updated_note_<?= $note['id']; ?>"
                                                         class="form-label"
                                                 >
                                                     Content
                                                 </label>
-
 
                                                 <textarea
                                                         id="updated_note_<?= $note['id']; ?>"
@@ -855,14 +383,10 @@ $scope = $scope ?? 'private';
                                                     ); ?></textarea>
 
                                             </div>
-
                                         </div>
 
-
                                         <!-- FOOTER -->
-
                                         <div class="modal-footer">
-
                                             <button
                                                     type="button"
                                                     class="btn-modal-cancel"
@@ -870,185 +394,67 @@ $scope = $scope ?? 'private';
                                             >
                                                 Cancel
                                             </button>
-
-
                                             <button
                                                     type="submit"
                                                     class="btn-modal-save"
                                             >
                                                 Save Changes
                                             </button>
-
                                         </div>
-
                                     </form>
-
                                 </div>
-
                             </div>
-
                         </div>
-
                     <?php endforeach; ?>
 
-
-                    <!-- ========================= -->
                     <!-- DELETE MODALS -->
-                    <!-- ========================= -->
+                    <?php include __DIR__ . "/../components/deleteModal.php"; ?>
 
-                    <?php foreach ($notes as $note): ?>
-
-                        <div
-                                class="modal fade"
-                                id="deleteNoteModal<?= $note['id']; ?>"
-                                tabindex="-1"
-                                aria-labelledby="deleteNoteModalLabel<?= $note['id']; ?>"
-                                aria-hidden="true"
-                        >
-
-                            <div class="modal-dialog modal-dialog-centered">
-
-                                <div class="modal-content dark-modal">
-
-                                    <!-- HEADER -->
-
-                                    <div class="modal-header">
-
-                                        <h5
-                                                class="modal-title"
-                                                id="deleteNoteModalLabel<?= $note['id']; ?>"
-                                        >
-                                            Delete Note
-                                        </h5>
-
-                                        <button
-                                                type="button"
-                                                class="btn-close btn-close-white"
-                                                data-bs-dismiss="modal"
-                                                aria-label="Close"
-                                        ></button>
-
-                                    </div>
-
-
-                                    <!-- BODY -->
-
-                                    <div class="modal-body">
-
-                                        <p class="mb-0">
-                                            Are you sure you want to delete this note?
-                                        </p>
-
-                                    </div>
-
-
-                                    <!-- FOOTER -->
-
-                                    <div class="modal-footer">
-
-                                        <button
-                                                type="button"
-                                                class="btn-modal-cancel"
-                                                data-bs-dismiss="modal"
-                                        >
-                                            Cancel
-                                        </button>
-
-                                        <form
-                                                method="POST"
-                                                action="/notes/delete"
-                                        >
-
-                                            <input
-                                                    type="hidden"
-                                                    name="id"
-                                                    value="<?= $note['id']; ?>"
-                                            >
-
-                                            <button
-                                                    type="submit"
-                                                    class="btn-note-delete"
-                                            >
-                                                Delete
-                                            </button>
-
-                                        </form>
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    <?php endforeach; ?>
-
-
-                    <!-- ========================= -->
                     <!-- PAGINATION -->
-                    <!-- ========================= -->
 
                     <?php if ($totalPages > 1): ?>
-
                         <nav
                                 class="mt-5"
                                 aria-label="Notes pagination"
                         >
-
                             <ul
                                     class="pagination justify-content-center"
                             >
 
-
                                 <!-- PREVIOUS -->
-
                                 <?php if ($page > 1): ?>
-
                                     <li class="page-item">
-
                                         <a
                                                 class="page-link pagination-link"
                                                 href="/notes/search?scope=<?= urlencode($scope); ?>&notes_search=<?= urlencode($search); ?>&from=<?= urlencode($from); ?>&to=<?= urlencode($to); ?>&notes_sort=<?= urlencode($sort); ?>&notes_page=<?= $page - 1; ?>"
                                         >
                                             ← Previous
                                         </a>
-
                                     </li>
-
                                 <?php endif; ?>
 
-
                                 <!-- PAGE NUMBERS -->
-
                                 <?php for (
                                         $i = 1;
                                         $i <= $totalPages;
                                         $i++
                                 ): ?>
-
                                     <li
                                             class="page-item <?= $i === $page
                                                     ? 'active'
                                                     : ''; ?>"
                                     >
-
                                         <a
                                                 class="page-link pagination-link"
                                                 href="/notes/search?scope=<?= urlencode($scope); ?>&notes_search=<?= urlencode($search); ?>&from=<?= urlencode($from); ?>&to=<?= urlencode($to); ?>&notes_sort=<?= urlencode($sort); ?>&notes_page=<?= $i; ?>"
                                         >
                                             <?= $i; ?>
                                         </a>
-
                                     </li>
-
                                 <?php endfor; ?>
 
-
                                 <!-- NEXT -->
-
                                 <?php if ($page < $totalPages): ?>
-
                                     <li class="page-item">
 
                                         <a
@@ -1059,37 +465,21 @@ $scope = $scope ?? 'private';
                                         </a>
 
                                     </li>
-
                                 <?php endif; ?>
-
-
                             </ul>
-
                         </nav>
-
                     <?php endif; ?>
-
-
                 <?php endif; ?>
-
-
             <?php endif; ?>
-
         </div>
-
     </div>
-
 </main>
 
-
 <?php include __DIR__ . "/../components/footer.php"; ?>
-
 
 <script
         src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
 ></script>
 
-
 </body>
-
 </html>
