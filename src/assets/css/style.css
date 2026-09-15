@@ -361,3 +361,135 @@ body {
   border-color:#2563eb;
   color:white;
 }
+
+/* ========================= */
+/* DARK MODALS */
+/* ========================= */
+
+.modal-content {
+  background:#0b1b36 !important;
+  color:#ffffff;
+  border:1px solid #222222;
+  border-radius:16px;
+  box-shadow:0 20px 60px rgba(0,0,0,.8);
+}
+
+.modal-header {
+  background:#0b1b36 !important;
+  color:#ffffff;
+  border-bottom:1px solid #222222;
+}
+
+.modal-body {
+  background:#0b1b36 !important;
+  color:#ffffff;
+}
+
+.modal-footer {
+  background:#0b1b36 !important;
+  border-top:1px solid #222222;
+}
+
+.modal-title {
+  color:#ffffff;
+  font-weight:700;
+}
+
+.modal .form-label {
+  color:#e5e7eb;
+  font-weight:600;
+}
+
+
+/* INPUTS */
+
+.modal-input {
+  background:#111111 !important;
+  border:1px solid #333333 !important;
+  color:#ffffff !important;
+  border-radius:10px;
+}
+
+.modal-input:focus {
+  background:#111111 !important;
+  color:#ffffff !important;
+  border-color:#3b82f6 !important;
+  box-shadow:0 0 12px rgba(59,130,246,.25) !important;
+}
+
+.modal-input::placeholder {
+  color:#777777;
+}
+
+
+/* CHECKBOX */
+
+.modal .form-check-input {
+  background-color:#111111;
+  border-color:#444444;
+}
+
+.modal .form-check-input:checked {
+  background-color:#2563eb;
+  border-color:#2563eb;
+}
+
+.modal .form-check-label {
+  color:#e5e7eb;
+}
+
+
+/* CLOSE BUTTON */
+
+.btn-close-white {
+  opacity:.8;
+}
+
+.btn-close-white:hover {
+  opacity:1;
+}
+
+
+/* BACKDROP */
+
+.modal-backdrop {
+  background:#000000;
+}
+
+.modal-backdrop.show {
+  opacity:.85;
+}
+
+
+/* MODAL BUTTONS */
+
+.btn-modal-save {
+  background:#2563eb;
+  border:none;
+  color:#ffffff;
+  border-radius:8px;
+  padding:8px 16px;
+  font-size:14px;
+  font-weight:600;
+}
+
+.btn-modal-save:hover {
+  background:#1d4ed8;
+  color:#ffffff;
+}
+
+.btn-modal-cancel {
+  background:transparent;
+  border:1px solid #444444;
+  color:#e5e7eb;
+  border-radius:8px;
+  padding:8px 16px;
+  font-size:14px;
+  text-decoration:none;
+}
+
+.btn-modal-cancel:hover {
+  background:#1a1a1a;
+  border-color:#666666;
+  color:#ffffff;
+}
